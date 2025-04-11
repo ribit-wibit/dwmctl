@@ -1,7 +1,7 @@
 # dwmctl
-A lightweight AutoHotKey script to map any key combo to actions like moving windows, switching workspaces, launching programs, etc. Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor).
+A lightweight AutoHotKey script to map any key combo to actions such as moving windows, switching workspaces, launching programs, etc. Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor).
 
-This script is meant to be fully customizable by the end user
+dwmctl is meant to be fully customizable by the end user.
 
 ## External Dependencies
 - AutoHotkey v2.0 (AHKv2)
