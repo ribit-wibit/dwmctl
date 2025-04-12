@@ -1,8 +1,6 @@
 # dwmctl
 A lightweight AutoHotKey script for Desktop Window Manager ([DWM](https://en.wikipedia.org/wiki/Desktop_Window_Manager)) to map any key combo to actions such as moving windows, switching workspaces, launching programs, etc.. without invading on the basic functions of DWM. Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor). Inspired by i3, sway and Hyprland.
 
-dwmctl is meant to be fully customizable by the end user.
-
 ## External Dependencies
 - AutoHotkey v2.0 (AHKv2)
 
