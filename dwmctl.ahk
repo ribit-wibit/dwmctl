@@ -4,7 +4,6 @@ TraySetIcon(".\icons\empty.ico")
 
 ; Elevate to admin if not admin
 full_command_line := DllCall("GetCommandLine", "str")
-
 if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
 {
     try
@@ -184,35 +183,16 @@ ToggleMaximize(string) {
     }
 }
 
-get_monitorMouseIn() {
-    ; if Mx or My is empty, revert to the mouse cursor placement
+MonitorMouseIn() {
     Coordmode("Mouse", "Screen")  ; use Screen, so we can compare the coords with the sysget information`
     MouseGetPos(&mx, &my)
-    return get_coordInWhichMonitor(mx, my)
+    return CoordInWhichMonitor(mx, my)
 }
-get_monitorWinIn(hwnd) {
+MonitorWindowIn(hwnd) {
     WinGetClientPos(&x, &y, &w, &h, "ahk_id " . hwnd)
-    coordInWhichMonitor := get_coordInWhichMonitor(x, y)
-    return coordInWhichMonitor
+    return CoordInWhichMonitor(x, y)
 }
-
-ActiveMonitorNumber() {
-    WinGetClientPos(&x, &y, &w, &h, "A")
-    coordInWhichMonitor := get_coordInWhichMonitor(x + w/2, y + h/2)
-    return coordInWhichMonitor
-}
-
-/**
- * 
- * @param {Number} posX 
- * @param {Number} posY 
- * @returns {Integer} 
- */
-; autohotkey - Determine which monitor the focus window is on? - Stack Overflow
-; https://stackoverflow.com/questions/59883798/determine-which-monitor-the-focus-window-is-on
-; Get monitor that mouse is in - AutoHotkey Community
-; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=54557
-get_coordInWhichMonitor(posX, posY) {
+CoordInWhichMonitor(posX, posY) {
     ; MsgBox(posX . " " . posY)
     MonitorCount := SysGet(SM_CMONITORS := 80)
     ; print({MonitorCount:MonitorCount})
@@ -226,6 +206,10 @@ get_coordInWhichMonitor(posX, posY) {
         if (posX >= left) && (posX < right) && (posY >= top) && (posY < bottom)
             return snMonitor
     }
+}
+ActiveMonitorNumber() {
+    WinGetClientPos(&x, &y, &w, &h, "A")
+    return CoordInWhichMonitor(x + w/2, y + h/2)
 }
 
 IsModifierClean(hotkey_string) {
@@ -373,8 +357,10 @@ NukeActiveWindowProcess(string) {
     }
 }
 
+
 ; This must be an actual modifier
 modifier := "#"
+
 
 ; Virtual workspaces
 Hotkey(modifier . "1", MoveOrGoToDesktop0)
@@ -390,15 +376,15 @@ Hotkey(modifier . "0", MoveOrGoToDesktop9)
 
 
 ; Window manipulation
-; Hotkey(modifier . "q", MoveActiveWindowLeftTop)
-; Hotkey(modifier . "e", MoveActiveWindowRightTop)
-; Hotkey(modifier . "z", MoveActiveWindowLeftBottom)
-; Hotkey(modifier . "c", MoveActiveWindowRightBottom)
-
 Hotkey(modifier . "w", MoveActiveWindowTop)
 Hotkey(modifier . "a", MoveActiveWindowLeft)
 Hotkey(modifier . "s", MoveActiveWindowBottom)
 Hotkey(modifier . "d", MoveActiveWindowRight)
+
+; Hotkey(modifier . "q", MoveActiveWindowLeftTop)
+; Hotkey(modifier . "e", MoveActiveWindowRightTop)
+; Hotkey(modifier . "z", MoveActiveWindowLeftBottom)
+; Hotkey(modifier . "c", MoveActiveWindowRightBottom)
 
 Hotkey(modifier . "F", ToggleMaximize)
 
