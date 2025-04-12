@@ -1,5 +1,5 @@
 # dwmctl
-A lightweight AutoHotKey script to map any key combo to actions such as moving windows, switching workspaces, launching programs, etc. Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor).
+A lightweight AutoHotKey script for Desktop Window Manager ([DWM](https://en.wikipedia.org/wiki/Desktop_Window_Manager)) to map any key combo to actions such as moving windows, switching workspaces, launching programs, etc.. without invading on the basic functions of DWM. Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor). Inspired by i3, sway and Hyprland.
 
 dwmctl is meant to be fully customizable by the end user.
 
@@ -14,8 +14,10 @@ dwmctl is meant to be fully customizable by the end user.
 - Move and resize windows across screen
 - Close window, kill active window process
 - Launch app (Command Palette, Terminal, etc.)
+- Active virtual desktop number as tray icon
 
 ## Future features
-- Active virtual desktop number as tray icon
-- Open notification center
-- ZoomIt draw/zoom
+- Hotkey to open notification center
+- ZoomIt draw/zoom hotkey
+- More window moving and resizing options while staying intuitive without adding extra keys
+- Hotkey to center window
