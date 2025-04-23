@@ -3,19 +3,17 @@ A lightweight AutoHotKey script for Desktop Window Manager ([DWM](https://en.wik
 
 ## Features
 - Move to between virtual desktops
-- Move and resize windows across screen
+- Move and resize windows across screen (using PowerToys FancyZones)
 - Close window, kill active window process
 - Launch app (Command Palette, Terminal, etc.)
 - Active virtual desktop number as tray icon
 
 ## Future features
-- Hotkey to open notification center
-- ZoomIt draw/zoom hotkey
-- More window moving and resizing options while staying intuitive without adding extra keys
 - Hotkey to center window
 
 ## External Dependencies
 - AutoHotkey v2.0 (AHKv2)
+- PowerToys
 
 ## Internal Dependencies
 - [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor)

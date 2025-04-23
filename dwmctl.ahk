@@ -2,7 +2,7 @@
 SetWorkingDir(A_ScriptDir)
 TraySetIcon(".\icons\empty.ico")
 
-; Elevate to admin if not admin
+; Elevate to admin if not admin, this only necessary to control admin windows and capture hotkeys when one is focused/active
 full_command_line := DllCall("GetCommandLine", "str")
 if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
 {
@@ -37,8 +37,7 @@ RegisterPostMessageHookProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopA
 UnregisterPostMessageHookProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "UnregisterPostMessageHook", "Ptr")
 
 ; Set tray icon on launch
-desktop_on_launch := DllCall(GetCurrentDesktopNumberProc, "Int") + 1
-TraySetIcon(".\icons\" desktop_on_launch ".ico")
+TraySetIcon(".\icons\" DllCall(GetCurrentDesktopNumberProc, "Int") + 1 ".ico")
 
 ; Virtual desktop functions
 GetDesktopCount() {
@@ -104,36 +103,6 @@ MoveOrGotoDesktopNumber(num) {
     }
     return
 }
-MoveOrGoToDesktop0(string) {
-    MoveOrGotoDesktopNumber(0)
-}
-MoveOrGoToDesktop1(string) {
-    MoveOrGotoDesktopNumber(1)
-}
-MoveOrGoToDesktop2(string) {
-    MoveOrGotoDesktopNumber(2)
-}
-MoveOrGoToDesktop3(string) {
-    MoveOrGotoDesktopNumber(3)
-}
-MoveOrGoToDesktop4(string) {
-    MoveOrGotoDesktopNumber(4)
-}
-MoveOrGoToDesktop5(string) {
-    MoveOrGotoDesktopNumber(5)
-}
-MoveOrGoToDesktop6(string) {
-    MoveOrGotoDesktopNumber(6)
-}
-MoveOrGoToDesktop7(string) {
-    MoveOrGotoDesktopNumber(7)
-}
-MoveOrGoToDesktop8(string) {
-    MoveOrGotoDesktopNumber(8)
-}
-MoveOrGoToDesktop9(string) {
-    MoveOrGotoDesktopNumber(9)
-}
 GetDesktopName(num) {
     global GetDesktopNameProc
     utf8_buffer := Buffer(1024, 0)
@@ -176,223 +145,60 @@ OnChangeDesktop(wParam, lParam, msg, hwnd) {
 
 ToggleMaximize(string) {
     minmax_state := WinGetMinMax(WinGetID("A"))
-    if (minmax_state = 0) {
+    if (minmax_state = 0)
         WinMaximize("A")
-    } else if (minmax_state = 1) {
+    else if (minmax_state = 1)
         WinRestore("A")
-    }
-}
-
-MonitorMouseIn() {
-    Coordmode("Mouse", "Screen")  ; use Screen, so we can compare the coords with the sysget information`
-    MouseGetPos(&mx, &my)
-    return CoordInWhichMonitor(mx, my)
-}
-MonitorWindowIn(hwnd) {
-    WinGetClientPos(&x, &y, &w, &h, "ahk_id " . hwnd)
-    return CoordInWhichMonitor(x, y)
-}
-CoordInWhichMonitor(posX, posY) {
-    ; MsgBox(posX . " " . posY)
-    MonitorCount := SysGet(SM_CMONITORS := 80)
-    ; print({MonitorCount:MonitorCount})
-    snMonitor := 0
-    while true {
-        snMonitor++
-        if (snMonitor > MonitorCount)
-            break
-        
-        MonitorGet(snMonitor, &Left, &Top, &Right, &Bottom)
-        if (posX >= left) && (posX < right) && (posY >= top) && (posY < bottom)
-            return snMonitor
-    }
-}
-ActiveMonitorNumber() {
-    WinGetClientPos(&x, &y, &w, &h, "A")
-    return CoordInWhichMonitor(x + w/2, y + h/2)
-}
-
-IsModifierClean(hotkey_string) {
-    allMods := ["Control", "Alt", "Shift", "LWin", "RWin"]
-    allowedMods := []
-
-    if InStr(hotkey_string, "^")
-        allowedMods.Push("Control")
-    if InStr(hotkey_string, "!")
-        allowedMods.Push("Alt")
-    if InStr(hotkey_string, "+")
-        allowedMods.Push("Shift")
-    if InStr(hotkey_string, "#")
-        allowedMods.Push("LWin"), allowedMods.Push("RWin")
- 
-    for mod in allMods {
-        if (!allowedMods.Has(mod) && GetKeyState(mod, "P"))
-            return false
-    }
-    return true
-}
-
-MoveActiveWindowLeftTop(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l, t, w/2, h/2, "A")
-    }
-}
-MoveActiveWindowRightTop(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l + w/2, t, w/2, h/2, "A")
-    }
-}
-
-MoveActiveWindowLeftBottom(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l, t + h/2, w/2, h/2, "A")
-    }
-}
-MoveActiveWindowRightBottom(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l + w/2, t + h/2, w/2, h/2, "A")
-    }
-}
-
-MoveActiveWindowTop(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l, t, w, h/2, "A")
-    }
-}
-MoveActiveWindowRight(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l + w/2, t, w/2, h, "A")
-    }
-}
-MoveActiveWindowBottom(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l, t + h/2, w, h/2, "A")
-    }
-}
-MoveActiveWindowLeft(string) {
-    if (IsNumber(ActiveMonitorNumber()) && WinExist("A")) {
-        MonitorGetWorkArea(ActiveMonitorNumber(), &l, &t, &r, &b)
-        w := r - l
-        h := b - t
-
-        minmax_state := WinGetMinMax(WinGetID("A"))
-        if (minmax_state = 1) {
-            WinRestore("A")
-        }
-        WinMove(l, t, w/2, h, "A")
-    }
-}
-
-LaunchTerminal(string) {
-    Run("wt")
-}
-LaunchCommandPalette(string) {
-    Send "#!{Space}"
 }
 
 KillActiveWindow(string) {
-    if WinExist("A") {
+    if WinExist("A")
         WinKill("A")
-    }
 }
 NukeActiveWindowProcess(string) {
-    if WinExist("A") {
+    if WinExist("A")
         ProcessClose(WinGetPID("A"))
-    }
 }
 
 
-; This must be an actual modifier
+; This must be a modifier key
 modifier := "#"
 
 
 ; Virtual workspaces
-Hotkey(modifier . "1", MoveOrGoToDesktop0)
-Hotkey(modifier . "2", MoveOrGoToDesktop1)
-Hotkey(modifier . "3", MoveOrGoToDesktop2)
-Hotkey(modifier . "4", MoveOrGoToDesktop3)
-Hotkey(modifier . "5", MoveOrGoToDesktop4)
-Hotkey(modifier . "6", MoveOrGoToDesktop5)
-Hotkey(modifier . "7", MoveOrGoToDesktop6)
-Hotkey(modifier . "8", MoveOrGoToDesktop7)
-Hotkey(modifier . "9", MoveOrGoToDesktop8)
-Hotkey(modifier . "0", MoveOrGoToDesktop9)
+Hotkey(modifier "1", (*) => MoveOrGotoDesktopNumber(0))
+Hotkey(modifier "2", (*) => MoveOrGotoDesktopNumber(1))
+Hotkey(modifier "3", (*) => MoveOrGotoDesktopNumber(2))
+Hotkey(modifier "4", (*) => MoveOrGotoDesktopNumber(3))
+Hotkey(modifier "5", (*) => MoveOrGotoDesktopNumber(4))
+Hotkey(modifier "6", (*) => MoveOrGotoDesktopNumber(5))
+Hotkey(modifier "7", (*) => MoveOrGotoDesktopNumber(6))
+Hotkey(modifier "8", (*) => MoveOrGotoDesktopNumber(7))
+Hotkey(modifier "9", (*) => MoveOrGotoDesktopNumber(8))
+Hotkey(modifier "0", (*) => MoveOrGotoDesktopNumber(9))
 
 
 ; Window manipulation
-Hotkey(modifier . "w", MoveActiveWindowTop)
-Hotkey(modifier . "a", MoveActiveWindowLeft)
-Hotkey(modifier . "s", MoveActiveWindowBottom)
-Hotkey(modifier . "d", MoveActiveWindowRight)
+; Depends on Powertoys > FancyZones > Override Windows Snap > Move windows based on [Relative position]
+Hotkey(modifier "w", (*) => Send("#{Up}"))
+Hotkey(modifier "a", (*) => Send("#{Left}"))
+Hotkey(modifier "s", (*) => Send("#{Down}"))
+Hotkey(modifier "d", (*) => Send("#{Right}"))
 
-; Hotkey(modifier . "q", MoveActiveWindowLeftTop)
-; Hotkey(modifier . "e", MoveActiveWindowRightTop)
-; Hotkey(modifier . "z", MoveActiveWindowLeftBottom)
-; Hotkey(modifier . "c", MoveActiveWindowRightBottom)
+; Switch between windows in the same Zone
+Hotkey(modifier "q", (*) => Send("#{PgUp}"))
 
-Hotkey(modifier . "F", ToggleMaximize)
+; Hotkey move active window between monitors from Windows Snap
+Hotkey(modifier "+a", (*) => Send("#+{Left}"))
+Hotkey(modifier "+d", (*) => Send("#+{Right}"))
+
+Hotkey(modifier "f", ToggleMaximize)
+
+Hotkey(modifier "+Q", KillActiveWindow)
+Hotkey(modifier "^+Q", NukeActiveWindowProcess)
 
 
-; Launch
-Hotkey(modifier . "Enter", LaunchTerminal)
-Hotkey(modifier . "Space", LaunchCommandPalette)
-
-; Close
-Hotkey(modifier . "+Q", KillActiveWindow)
-Hotkey(modifier . "^+Q", NukeActiveWindowProcess)
+; Launch Terminal
+Hotkey(modifier "Enter", (*) => Run("wt"))
+; Launch Command Palette
+Hotkey(modifier "Space", (*) => Send("#!{Space}"))
