@@ -1,13 +1,22 @@
-; AutoHotkey v2 script
+
+/*** dwmctl **************************************************************************
+ * 
+ *  Version   : 0.1
+ *  AutoHotkey: v2.0
+ *  Tested    : Windows 11 24H2
+ * 
+ *  Window manipulation depends on Powertoys
+ *      FancyZones > Override Windows Snap > Move windows based on [Relative position]
+ * 
+ ************************************************************************************/
+
 SetWorkingDir(A_ScriptDir)
 TraySetIcon(".\icons\empty.ico")
 
 ; Elevate to admin if not admin, this only necessary to control admin windows and capture hotkeys when one is focused/active
 full_command_line := DllCall("GetCommandLine", "str")
-if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
-{
-    try
-    {
+if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)")) {
+    try {
         if A_IsCompiled
             Run '*RunAs "' A_ScriptFullPath '" /restart'
         else
@@ -139,10 +148,11 @@ OnChangeDesktop(wParam, lParam, msg, hwnd) {
     Name := GetDesktopName(NewDesktop - 1)
 
     ; Use Dbgview.exe to checkout the output debug logs
-    OutputDebug("Desktop changed to " Name " from " OldDesktop " to " NewDesktop)
+    ; OutputDebug("Desktop changed to " Name " from " OldDesktop " to " NewDesktop)
     TraySetIcon(".\icons\" NewDesktop ".ico")
 }
 
+; Window functions
 ToggleMaximize(string) {
     minmax_state := WinGetMinMax(WinGetID("A"))
     if (minmax_state = 0)
@@ -150,7 +160,6 @@ ToggleMaximize(string) {
     else if (minmax_state = 1)
         WinRestore("A")
 }
-
 KillActiveWindow(string) {
     if WinExist("A")
         WinKill("A")
@@ -161,11 +170,10 @@ NukeActiveWindowProcess(string) {
 }
 
 
-; This must be a modifier key
+/* Hotkey definiton */
 modifier := "#"
 
-
-; Virtual workspaces
+; Virtual desktop
 Hotkey(modifier "1", (*) => MoveOrGotoDesktopNumber(0))
 Hotkey(modifier "2", (*) => MoveOrGotoDesktopNumber(1))
 Hotkey(modifier "3", (*) => MoveOrGotoDesktopNumber(2))
@@ -177,26 +185,24 @@ Hotkey(modifier "8", (*) => MoveOrGotoDesktopNumber(7))
 Hotkey(modifier "9", (*) => MoveOrGotoDesktopNumber(8))
 Hotkey(modifier "0", (*) => MoveOrGotoDesktopNumber(9))
 
-
-; Window manipulation
-; Depends on Powertoys > FancyZones > Override Windows Snap > Move windows based on [Relative position]
+; Move active window between Zones
 Hotkey(modifier "w", (*) => Send("#{Up}"))
 Hotkey(modifier "a", (*) => Send("#{Left}"))
 Hotkey(modifier "s", (*) => Send("#{Down}"))
 Hotkey(modifier "d", (*) => Send("#{Right}"))
-
-; Switch between windows in the same Zone
+; Switch between windows in the active Zone
 Hotkey(modifier "q", (*) => Send("#{PgUp}"))
 
-; Hotkey move active window between monitors from Windows Snap
+; Hotkey move active window between monitors (needs Windows Snap active..)
 Hotkey(modifier "+a", (*) => Send("#+{Left}"))
 Hotkey(modifier "+d", (*) => Send("#+{Right}"))
 
+; Toggle active window maximize
 Hotkey(modifier "f", ToggleMaximize)
 
+; Kill active window
 Hotkey(modifier "+Q", KillActiveWindow)
 Hotkey(modifier "^+Q", NukeActiveWindowProcess)
-
 
 ; Launch Terminal
 Hotkey(modifier "Enter", (*) => Run("wt"))
