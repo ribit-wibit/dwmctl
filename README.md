@@ -6,7 +6,7 @@ A lightweight AutoHotKey v2.0 script for Desktop Window Manager to map key combi
 Based on [AutoHotkey V2 example.ah2](https://github.com/Ciantic/VirtualDesktopAccessor/blob/rust/example.ah2) from [VirtualDesktopAccessor](https://github.com/Ciantic/VirtualDesktopAccessor). Inspired by i3, sway and Hyprland.
 
 ## Notes
-If you'd like to remap a certain key (e.g. CapsLock) to a modifier key (e.g. Win), using AutoHotKey remapping may be unable to create the function you need (combo order issues, repeated presses not working without full release). The best way I've found to do this is through registery editing, either manually or through a tool such as [SharpKeys](https://github.com/randyrants/sharpkeys).
+If you'd like to remap a certain key (e.g. CapsLock) to a modifier key (e.g. Win), using AutoHotKey [remapping](https://www.autohotkey.com/docs/v2/misc/Remap.htm) may be unable to create the function you need (combo order issues, repeated presses not working without full release). The best way I've found to do this is through registery editing, either manually or through a tool such as [SharpKeys](https://github.com/randyrants/sharpkeys).
 
 ## Features
 - Move between virtual desktops
