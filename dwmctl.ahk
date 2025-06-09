@@ -184,10 +184,11 @@ ShellRun(filePath, arguments?, directory?, operation?, show?) {
         .ShellExecute(filePath, arguments?, directory?, operation?, show?)
 }
 
-/* Hotkey definiton */
+/* Hotkey definition */
 modifier := "#"
+homeDir := EnvGet("USERPROFILE")
 
-; Virtual desktop
+; Move desktop (takes click-held window with you)
 Hotkey(modifier "1", (*) => MoveOrGotoDesktopNumber(0))
 Hotkey(modifier "2", (*) => MoveOrGotoDesktopNumber(1))
 Hotkey(modifier "3", (*) => MoveOrGotoDesktopNumber(2))
@@ -198,6 +199,8 @@ Hotkey(modifier "7", (*) => MoveOrGotoDesktopNumber(6))
 Hotkey(modifier "8", (*) => MoveOrGotoDesktopNumber(7))
 Hotkey(modifier "9", (*) => MoveOrGotoDesktopNumber(8))
 Hotkey(modifier "0", (*) => MoveOrGotoDesktopNumber(9))
+
+; Move desktop (takes active window with you)
 Hotkey(modifier "+1", (*) => MoveCurrentWindowToDesktop(0))
 Hotkey(modifier "+2", (*) => MoveCurrentWindowToDesktop(1))
 Hotkey(modifier "+3", (*) => MoveCurrentWindowToDesktop(2))
@@ -231,12 +234,14 @@ Hotkey(modifier "c", CenterWindow)
 Hotkey(modifier "+q", KillActiveWindow)
 Hotkey(modifier "^+q", NukeActiveWindowProcess)
 
-; Launch Terminal
-Hotkey(modifier "Enter", (*) => ShellRun("cmd"))
+; Launch WSL Terminal
+Hotkey(modifier "Enter", (*) => ShellRun("wsl", "--cd ~"))
+
+PSString := "-NoExit -c cd " . "homeDir"
+; Launch Powershell
+Hotkey(modifier "\", (*) => ShellRun("pwsh", "-NoExit -c cd ~"))
+; Launch Powershell admin
+Hotkey(modifier "+\", (*) => Run("pwsh -NoExit -c cd ~"))
 
 ; Reload dwmctl
-;Hotkey(modifier "+r", (*) => Reload)
-
 #+r::Reload
-
-MsgBox("test")
