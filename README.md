@@ -16,7 +16,7 @@ If you'd like to remap a certain key (e.g. CapsLock) to a modifier key (e.g. Win
 - Active virtual desktop number as tray icon
 
 ## Future features
-- Hotkey to center window
+- ..?
 
 ## External Dependencies
 - [AutoHotkey v2.0 (AHKv2)](https://www.autohotkey.com/)

@@ -160,6 +160,15 @@ ToggleMaximize(string) {
     else if (minmax_state = 1)
         WinRestore("A")
 }
+CenterWindow(string) {
+        Width := 3/4 * SysGet(16)
+        Top := 0
+        Bottom := 0
+        MonitorGetWorkArea(1,, &Top,, &Bottom)
+        Height := Bottom - Top
+        WinMove((A_ScreenWidth/2)-(Width/2), 0, Width, Height, "A")
+    }
+
 KillActiveWindow(string) {
     if WinExist("A")
         WinKill("A")
@@ -169,6 +178,11 @@ NukeActiveWindowProcess(string) {
         ProcessClose(WinGetPID("A"))
 }
 
+ShellRun(filePath, arguments?, directory?, operation?, show?) {
+    static VT_UI4 := 0x13, SWC_DESKTOP := ComValue(VT_UI4, 0x8)
+    ComObject("Shell.Application").Windows.Item(SWC_DESKTOP).Document.Application
+        .ShellExecute(filePath, arguments?, directory?, operation?, show?)
+}
 
 /* Hotkey definiton */
 modifier := "#"
@@ -184,6 +198,16 @@ Hotkey(modifier "7", (*) => MoveOrGotoDesktopNumber(6))
 Hotkey(modifier "8", (*) => MoveOrGotoDesktopNumber(7))
 Hotkey(modifier "9", (*) => MoveOrGotoDesktopNumber(8))
 Hotkey(modifier "0", (*) => MoveOrGotoDesktopNumber(9))
+Hotkey(modifier "+1", (*) => MoveCurrentWindowToDesktop(0))
+Hotkey(modifier "+2", (*) => MoveCurrentWindowToDesktop(1))
+Hotkey(modifier "+3", (*) => MoveCurrentWindowToDesktop(2))
+Hotkey(modifier "+4", (*) => MoveCurrentWindowToDesktop(3))
+Hotkey(modifier "+5", (*) => MoveCurrentWindowToDesktop(4))
+Hotkey(modifier "+6", (*) => MoveCurrentWindowToDesktop(5))
+Hotkey(modifier "+7", (*) => MoveCurrentWindowToDesktop(6))
+Hotkey(modifier "+8", (*) => MoveCurrentWindowToDesktop(7))
+Hotkey(modifier "+9", (*) => MoveCurrentWindowToDesktop(8))
+Hotkey(modifier "+0", (*) => MoveCurrentWindowToDesktop(9))
 
 ; Move active window between Zones
 Hotkey(modifier "w", (*) => Send("#{Up}"))
@@ -200,11 +224,19 @@ Hotkey(modifier "+d", (*) => Send("#+{Right}"))
 ; Toggle active window maximize
 Hotkey(modifier "f", ToggleMaximize)
 
+; Center active window
+Hotkey(modifier "c", CenterWindow)
+
 ; Kill active window
-Hotkey(modifier "+Q", KillActiveWindow)
-Hotkey(modifier "^+Q", NukeActiveWindowProcess)
+Hotkey(modifier "+q", KillActiveWindow)
+Hotkey(modifier "^+q", NukeActiveWindowProcess)
 
 ; Launch Terminal
-Hotkey(modifier "Enter", (*) => Run("wt"))
-; Launch Command Palette
-Hotkey(modifier "Space", (*) => Send("#!{Space}"))
+Hotkey(modifier "Enter", (*) => ShellRun("cmd"))
+
+; Reload dwmctl
+;Hotkey(modifier "+r", (*) => Reload)
+
+#+r::Reload
+
+MsgBox("test")
