@@ -178,6 +178,7 @@ NukeActiveWindowProcess(string) {
         ProcessClose(WinGetPID("A"))
 }
 
+; From https://github.com/AutoHotkey/AutoHotkeyUX/blob/main/inc/ShellRun.ahk
 ShellRun(filePath, arguments?, directory?, operation?, show?) {
     static VT_UI4 := 0x13, SWC_DESKTOP := ComValue(VT_UI4, 0x8)
     ComObject("Shell.Application").Windows.Item(SWC_DESKTOP).Document.Application
