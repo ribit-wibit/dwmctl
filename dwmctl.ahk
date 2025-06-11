@@ -161,13 +161,18 @@ ToggleMaximize(string) {
         WinRestore("A")
 }
 CenterWindow(string) {
-        Width := 3/4 * SysGet(16)
-        Top := 0
-        Bottom := 0
-        MonitorGetWorkArea(1,, &Top,, &Bottom)
-        Height := Bottom - Top
+    minmax_state := WinGetMinMax(WinGetID("A"))
+    Width := 3/4 * SysGet(16)
+    Top := 0
+    Bottom := 0
+    MonitorGetWorkArea(1,, &Top,, &Bottom)
+    Height := Bottom - Top
+    if (minmax_state = 0)
         WinMove((A_ScreenWidth/2)-(Width/2), 0, Width, Height, "A")
-    }
+    else if (minmax_state = 1)
+        WinRestore("A")
+        WinMove((A_ScreenWidth/2)-(Width/2), 0, Width, Height, "A")
+}
 
 KillActiveWindow(string) {
     if WinExist("A")
