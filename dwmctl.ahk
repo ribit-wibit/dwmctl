@@ -56,8 +56,10 @@ GetDesktopCount() {
 }
 MoveCurrentWindowToDesktop(number) {
     global MoveWindowToDesktopNumberProc, GoToDesktopNumberProc
-    activeHwnd := WinGetID("A")
-    DllCall(MoveWindowToDesktopNumberProc, "Ptr", activeHwnd, "Int", number, "Int")
+    if WinExist("A") {
+        activeHwnd := WinGetID("A")
+        DllCall(MoveWindowToDesktopNumberProc, "Ptr", activeHwnd, "Int", number, "Int")
+    }
     DllCall(GoToDesktopNumberProc, "Int", number, "Int")
 }
 GoToPrevDesktop() {
